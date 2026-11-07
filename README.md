@@ -44,6 +44,7 @@ Alongside manual testing (typing input directly into the forms), each page has a
 ## Running it
 
 ```bash
+cd Code
 pip install flask requests
 python app.py
 ```
