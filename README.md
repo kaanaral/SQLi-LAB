@@ -19,24 +19,26 @@ Alongside manual testing (typing input directly into the forms), each page has a
 ## Project structure
 
 ```
-.
-├── app.py              # Flask app: vulnerable routes + test runner endpoint
-├── test_sqli.py        # Standalone script with one function per SQLi type
-├── database.db         # SQLite database (created automatically on first run)
-├── templates/
-│   ├── index.html
-│   ├── login.html       # also serves /register
-│   ├── search.html      # UNION-based walkthrough
-│   ├── check.html        # Boolean-based walkthrough
-│   └── users.html        # Raw dump of the credentials table, for /data
+├── Code/
+│   ├── app.py              # Flask app: vulnerable routes + test runner endpoint
+│   ├── test_sqli.py        # Standalone script with one function per SQLi type
+│   ├── database.db         # SQLite database (created automatically on first run)
+│   └── templates/
+│       ├── index.html
+│       ├── login.html       # also serves /register
+│       ├── search.html      # UNION-based walkthrough
+│       ├── check.html       # Boolean-based walkthrough
+│       └── users.html       # Raw dump of the credentials table, for /data
+├── README.md
+├── LICENSE
+└── .gitignore
 ```
 
 ## How it works
 
 - **`app.py`** contains the vulnerable queries themselves (string-formatted SQL, no parameterization) plus `/run-sqli-test`, which runs `test_sqli.py` as a subprocess and returns its raw `stdout`/`stderr` as JSON.
-- **`test_sqli.py`** has one function per attack type (`authentication_based`, `union_based`, `boolean_based`). Each one sends a real HTTP request to the app's own routes, checks the response, and returns a JSON-serializable result — including an `error` field when the request itself fails (bad status code, connection error) so the front-end can tell "the attack didn't work" apart from "something broke."
-- **Each HTML page** fetches that result and narrates it through an animated, multi-step panel: the payload, the raw database response, and a report. The "why this happened" and "the fix" sections only appear when the attack actually succeeded — if the payload has been edited and no longer works, the page shows what the original payload was instead.
-
+- **`test_sqli.py`** has one function per attack type (`authentication_based`, `union_based`, `boolean_based`). Each one sends a real HTTP request to the app's own routes, checks the response, and returns a JSON-serializable result
+- **Each HTML page** fetches that result and narrates it through an animated, multi-step panel: the payload, the raw database response, and a report such as why it worked or fix it.
 ## Running it
 
 ```bash
