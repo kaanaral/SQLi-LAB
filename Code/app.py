@@ -1,5 +1,5 @@
 import subprocess
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import sys
 
@@ -49,17 +49,21 @@ def login():
         password = request.form['password'].strip()
         with sqlite3.connect("database.db") as users:
             cur = users.cursor()
-
-            #Vulnerable Code(SQLi)
-            cur.execute(f"SELECT * FROM credentials WHERE username = '{username}' " \
-            f"AND password = '{password}'")   
+            
+            try:
+                #Vulnerable
+                cur.execute(f"SELECT * FROM credentials WHERE username = '{username}' " \
+                f"AND password = '{password}'")
+                res = cur.fetchone()
+            except Exception as e:
+                return f'DB_ERROR: {str(e)}'  
             
             #How it should be:
-            """cur.execute('SELECT * FROM credentials WHERE username = ? AND password = ?',
-            (username, password),)"""
-
-            res = cur.fetchone()
-
+            """
+            cur.execute('SELECT * FROM credentials WHERE username = ? AND password = ?',
+            (username, password),)
+            """
+            
         if res:
             return render_template("login.html", message="Login Successfull!")
         else:
@@ -70,8 +74,16 @@ def login():
 
 
 #To test if db works properly.
-@app.route('/data',)
+@app.route('/data', methods=["GET", "POST"])
 def data():
+    if request.method == "POST":
+        username = request.form['username']
+        with sqlite3.connect('database.db') as users:
+            cur = users.cursor()
+            cur.execute("DELETE FROM credentials WHERE username = ?", (username,))
+            users.commit()
+        return redirect(url_for('data'))
+     
     with sqlite3.connect('database.db') as users:
         cur = users.cursor()
         cur.execute('SELECT * FROM credentials')
