@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Database (gets created automatically on first run)
+database.db
+
 # C extensions
 *.so
 
