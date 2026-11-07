@@ -1,6 +1,6 @@
 # SQLi Lab
 
-A small Flask application built to **demonstrate and teach SQL Injection** vulnerabilities in a hands-on way. It contains deliberately vulnerable routes, an automated test script that exploits them, and a set of pages that walk through each attack live in the browser.
+A small Flask application built to **demonstrate and teach SQL Injection** vulnerabilities in a hands-on way to learn how it works. It contains deliberately vulnerable routes, an automated test script that exploits them, and a set of pages that walk through each attack live in the browser.
 
 > **For educational use only.** The app is intentionally insecure. Do not deploy it on a public server or reuse its database code in a real project.
 
@@ -43,6 +43,8 @@ Alongside manual testing (typing input directly into the forms), each page has a
 - **Each HTML page** fetches that result and narrates it through an animated, multi-step panel: the payload, the raw database response, and a report such as why it worked or fix it.
 ## Running it
 
+- **Important Note:** The Payloads are mostly static so for example if you want run boolean payload, you need to create a user called "Hello" and password starts with 'H' or you can directly change the payload.
+  
 ```bash
 cd Code
 pip install flask requests
