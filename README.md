@@ -43,7 +43,7 @@ Alongside manual testing (typing input directly into the forms), each page has a
 - **Each HTML page** fetches that result and narrates it through an animated, multi-step panel: the payload, the raw database response, and a report such as why it worked or fix it.
 ## Running it
 
-- **Important Note:** The Payloads are mostly static so for example if you want run boolean payload, you need to create a user called "Hello" and password starts with 'H' or you can directly change the payload.
+- **Important Note:** The Payloads are mostly static so for example if you want run boolean payload, you need to create a user called "Hello" and password starts with 'H' or you can directly modify the payloads.
   
 ```bash
 cd Code
