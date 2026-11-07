@@ -614,11 +614,17 @@ password = (anything)</code>
         <div class="report-block">
           <h4>Good to know</h4>
           <div class="bullets">
-            <div class="bullet">No real username or password is ever needed — just a payload that makes the condition
+            <div class="bullet">No real username or password is ever needed, just a payload that makes the condition
               always true.</div>
             <div class="bullet">Commenting out the rest of the query is why the password field doesn't matter here at
               all.</div>
             <div class="bullet">Any login form built this way is bypassable the same way, not just this one.</div>
+            <div class="bullet">This payload names no user, so the app logs in as the first row in the table.</div>
+            <div class="bullet">To log in as a specific user, put their name before the comment, like
+              <code>username = admin’ --</code>. Without removing OR 1=1, it would return the first row regardless of
+              username, that’s why we removed it.</div>
+            <div class="bullet">With no registered users there is nothing to match, so even a working payload can't log
+              in.</div>
           </div>
         </div>
 
@@ -700,8 +706,8 @@ password = (anything)</code>
           titleEl.textContent = 'Bypassed — logged in with no real credentials';
           textEl.textContent = 'The payload made the query true on its own, so the password check never mattered.';
         } else if (info.kind === 'false') {
-          titleEl.textContent = 'Didn\'t bypass this time';
-          textEl.textContent = 'The server didn\'t report a successful login for this payload.';
+          titleEl.textContent = 'Didn\'t bypass — there was no one to log in as';
+          textEl.textContent = 'Payload couldn\'t pick a user, the table may empty or the user you typed may not exist. Register a user at /register and run the test again.';
         } else {
           titleEl.textContent = 'No signal from the script yet';
           textEl.textContent = 'Add the two-line fix to authentication_based() so it reports a result, then run again.';
