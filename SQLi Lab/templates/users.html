@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Participant list — SQLi Lab</title>
+<style>
+  :root{
+    --bg: #0a0a0a;
+    --card: #181818;
+    --card-hover: #212121;
+    --border: #2a2a2a;
+    --text: #ededed;
+    --text-dim: #9a9a9a;
+    --text-faint: #6b6b6b;
+    --red: #e5554a;
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, Menlo, monospace;
+    --sans: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    --ease: cubic-bezier(.25,.8,.35,1);
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 420px at 50% -10%, rgba(255,255,255,0.05), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.55;
+    padding: 56px 20px 90px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 760px; margin: 0 auto; }
+
+  .back{
+    display: inline-block;
+    font-size: 0.82rem;
+    color: var(--text-faint);
+    text-decoration: none;
+    margin-bottom: 24px;
+  }
+  .back:hover{ color: var(--text-dim); }
+
+  h1{ font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .sub{ color: var(--text-dim); font-size: 0.92rem; margin: 0 0 32px; max-width: 54ch; }
+
+  .count{
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--text-faint);
+    background: var(--card);
+    padding: 4px 11px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+
+  .table-card{
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  table{ width: 100%; border-collapse: collapse; }
+
+  thead th{
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td{
+    padding: 13px 20px;
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr:last-child td{ border-bottom: none; }
+  tbody tr{ transition: background .15s var(--ease); }
+  tbody tr:hover{ background: var(--card-hover); }
+
+  td.password{ color: var(--red); }
+  td.index{ color: var(--text-faint); width: 1%; white-space: nowrap; }
+
+  .empty{
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="{{ url_for('index') }}">← back</a>
+
+  <h1>Participant list</h1>
+  <p class="sub">Every row currently in the <code>credentials</code> table — this is what a successful attack on the other pages actually exposes.</p>
+
+  {% if data %}
+    <span class="count">{{ data|length }} row{{ 's' if data|length != 1 else '' }}</span>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Username</th>
+            <th>Password</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data %}
+          <tr>
+            <td class="index">{{ loop.index }}</td>
+            <td>{{ row[0] }}</td>
+            <td class="password">{{ row[1] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="table-card">
+      <div class="empty">No participants yet — register one to see them here.</div>
+    </div>
+  {% endif %}
+
+</div>
+</body>
+</html>
