@@ -7,12 +7,22 @@ def authentication_based():
 
     url = 'http://127.0.0.1:5000/login'
 
-    payload = {'username': '\' OR 1=1 --', 
+    payload = {'username': "' OR 1=1 --", 
                'password': 'who cares'}
-
-    r = requests.post(url, data=payload)
-
+    try:
+        r = requests.post(url, data=payload)
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Request failed: {str(e)}"}
     vulnerable = 'Login Successfull!' in r.text
+
+    if r.text.startswith('DB_ERROR'):
+        return {
+            "kind": "err",
+            "username": payload['username'],
+            "password": payload['password'],
+            "text": r.text,
+            "explain": "The query broke instead of returning a result — likely a syntax issue in the payload."
+        }
 
     return {
         "kind": "true" if vulnerable else "false",
