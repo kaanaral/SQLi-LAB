@@ -368,9 +368,6 @@
       color: var(--text-dim);
     }
 
-    /* Intentionally NOT <li> elements: test_sqli.py's UNION check scrapes every
-     <li>...</li> on the page, so any <li> here would show up as a "found"
-     value. These are div-based bullets so only the real results list matches. */
     .bullets {
       display: flex;
       flex-direction: column;
@@ -519,6 +516,7 @@
       <button type="submit" class="btn-ghost">Search</button>
     </form>
 
+    {% if request.method == 'POST' %}
     {% if results %}
     <div class="results">
       <h3>MATCHES</h3>
@@ -528,6 +526,9 @@
         {% endfor %}
       </ul>
     </div>
+    {% else %}
+    <p class="message">No matches found.</p>
+    {% endif %}
     {% endif %}
 
     <hr>
@@ -577,8 +578,8 @@
           <span>table: <b>credentials</b></span>
           <span>column: <b>password</b></span>
         </div>
-        <p>Parsed straight from the script's real output — values returned through a list that was only ever meant to
-          show usernames:</p>
+        <p>The page only shows usernames, 
+          but the UNION payload slipped passwords into that same list:</p>
         <ul class="leak-list" id="leak-list"></ul>
       </div>
 
@@ -692,7 +693,7 @@
       function renderSummary(passwords) {
         const el = document.getElementById('report-summary');
         const worked = passwords.length > 0;
-        
+
         el.innerHTML = passwords.length
           ? `This run extracted ${passwords.length} password${passwords.length === 1 ? '' : 's'} through the UNION payload.`
           : `This run's UNION payload didn't return any rows — there may be no registered users yet.`;
