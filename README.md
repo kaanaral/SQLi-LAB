@@ -2,7 +2,7 @@
 
 A small Flask application built to **demonstrate and teach SQL Injection** vulnerabilities in a hands-on way. It contains deliberately vulnerable routes, an automated test script that exploits them, and a set of pages that walk through each attack live in the browser.
 
-> ⚠️ **For educational use only.** The app is intentionally insecure. Do not deploy it on a public server or reuse its database code in a real project.
+> **For educational use only.** The app is intentionally insecure. Do not deploy it on a public server or reuse its database code in a real project.
 
 ## What this project does
 
@@ -37,7 +37,9 @@ Alongside manual testing (typing input directly into the forms), each page has a
 ## How it works
 
 - **`app.py`** contains the vulnerable queries themselves (string-formatted SQL, no parameterization) plus `/run-sqli-test`, which runs `test_sqli.py` as a subprocess and returns its raw `stdout`/`stderr` as JSON.
-- **`test_sqli.py`** has one function per attack type (`authentication_based`, `union_based`, `boolean_based`). Each one sends a real HTTP request to the app's own routes, checks the response, and returns a JSON-serializable result
+  
+- **`test_sqli.py`** has one function per attack type (`authentication_based`, `union_based`, `boolean_based`). Each one sends a real HTTP request to the app's own routes, checks the response, and returns a JSON-serializable result.
+
 - **Each HTML page** fetches that result and narrates it through an animated, multi-step panel: the payload, the raw database response, and a report such as why it worked or fix it.
 ## Running it
 
@@ -46,21 +48,8 @@ pip install flask requests
 python app.py
 ```
 
-Then open `http://127.0.0.1:5000/register` to create a test account, and visit `/login`, `/search`, or `/check` to try each vulnerability — manually or via the "Run test" button.
+Then open `http://127.0.0.1:5000/register` to create a test account, and visit `/login`, `/search`, or `/check` to try each vulnerability manually or via the "Run test" button.
 
-## The core lesson
-
-Every vulnerable query in this project follows the same unsafe pattern:
-
-```python
-cur.execute(f"SELECT * FROM credentials WHERE username = '{username}'")
-```
-
-User input is pasted directly into the SQL string, so anything that looks like SQL *becomes* SQL. The fix is the same everywhere: use parameterized queries, which send the value separately from the query itself.
-
-```python
-cur.execute("SELECT * FROM credentials WHERE username = ?", (username,))
-```
 
 ## Status
 
