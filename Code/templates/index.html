@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQLi Lab</title>
+<style>
+  :root{
+    --bg: #0a0a0a;
+    --card: #181818;
+    --card-hover: #212121;
+    --border: #2a2a2a;
+    --text: #ededed;
+    --text-dim: #9a9a9a;
+    --text-faint: #6b6b6b;
+    --amber: #e8a33d;
+    --red: #e5554a;
+    --green: #3fd17e;
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, Menlo, monospace;
+    --sans: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    --ease: cubic-bezier(.25,.8,.35,1);
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 420px at 50% -10%, rgba(255,255,255,0.05), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.55;
+    padding: 64px 20px 90px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 760px; margin: 0 auto; }
+
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin: 0 0 10px;
+  }
+
+  h1{
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+  }
+
+  .sub{
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin: 0 0 44px;
+    max-width: 56ch;
+  }
+
+  .grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  @media (min-width: 620px){
+    .grid{ grid-template-columns: 1fr 1fr; }
+    .grid a.span-2{ grid-column: 1 / -1; }
+  }
+
+  a.card{
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    text-decoration: none;
+    color: var(--text);
+    transition: background .2s var(--ease), transform .15s var(--ease), border-color .2s var(--ease);
+  }
+  a.card:hover{
+    background: var(--card-hover);
+    transform: translateY(-2px);
+    border-color: #3a3a3a;
+  }
+  a.card:active{ transform: translateY(0) scale(0.99); }
+
+  .card-tag{
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+  .card-tag.union{ background: rgba(63,209,126,0.12); color: var(--green); }
+  .card-tag.boolean{ background: rgba(232,163,61,0.14); color: var(--amber); }
+  .card-tag.auth{ background: rgba(229,85,74,0.12); color: var(--red); }
+  .card-tag.neutral{ background: #262626; color: var(--text-dim); }
+
+  .card h2{
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  .card p{
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--text-dim);
+  }
+
+  .card-arrow{
+    float: right;
+    color: var(--text-faint);
+    font-family: var(--mono);
+    font-size: 0.95rem;
+  }
+
+  footer{
+    margin-top: 48px;
+    font-size: 0.78rem;
+    color: var(--text-faint);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Flask + SQLite</p>
+  <h1>SQLi Lab</h1>
+  <p class="sub">A small intentionally-vulnerable app for learning SQL injection — each page below walks through one real attack, live, using the project's own test script.</p>
+
+  <div class="grid">
+
+    <a class="card" href="{{ url_for('search') }}">
+      <span class="card-arrow">→</span>
+      <span class="card-tag union">UNION-based</span>
+      <h2>Search for a user</h2>
+      <p>Pulls hidden columns out through a results list that was only ever meant to show usernames.</p>
+    </a>
+
+    <a class="card" href="{{ url_for('check') }}">
+      <span class="card-arrow">→</span>
+      <span class="card-tag boolean">Boolean-based blind</span>
+      <h2>Check if a user exists</h2>
+      <p>No data shown directly — just a true/false answer, asked one question at a time.</p>
+    </a>
+
+    <a class="card" href="{{ url_for('login') }}">
+      <span class="card-arrow">→</span>
+      <span class="card-tag auth">Auth bypass</span>
+      <h2>Log in</h2>
+      <p>Logs in with no real username or password — just a payload that's always true.</p>
+    </a>
+
+    <a class="card" href="{{ url_for('register') }}">
+      <span class="card-arrow">→</span>
+      <span class="card-tag neutral">Setup</span>
+      <h2>Register</h2>
+      <p>Create an account to have something real to search for, check, and log into.</p>
+    </a>
+
+    <a class="card span-2" href="{{ url_for('data') }}">
+      <span class="card-arrow">→</span>
+      <span class="card-tag neutral">Reference</span>
+      <h2>Participant list</h2>
+      <p>Every row currently in the credentials table — useful to see what a successful attack actually exposed.</p>
+    </a>
+
+  </div>
+
+  <footer>Built for learning — every vulnerability here is intentional.</footer>
+
+</div>
+</body>
+</html>
