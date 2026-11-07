@@ -8,11 +8,11 @@ A small Flask application built to **demonstrate and teach SQL Injection** vulne
 
 The app ships with three classic SQL Injection patterns, each with its own vulnerable route and its own front-end walkthrough:
 
-| Type | Route | What it shows |
-|---|---|---|
-| **Authentication-based** | `/login` | Bypassing a login form with `' OR 1=1 --`, no real credentials needed |
-| **UNION-based** | `/search` | Using `UNION SELECT` to pull passwords out through a search box |
-| **Boolean-based (blind)** | `/check` | Asking the database true/false questions to infer data one bit at a time |
+| Type | Route |
+|---|---|
+| **Authentication-based** | `/login` 
+| **UNION-based** | `/search` 
+| **Boolean-based (blind)** | `/check` 
 
 Alongside manual testing (typing input directly into the forms), each page has a **"Run test" button** that triggers `test_sqli.py` on the server and narrates, step by step, what the script actually sent and what came back — including the exact payload, the raw server response, and a plain-language explanation of why it worked (or didn't).
 
